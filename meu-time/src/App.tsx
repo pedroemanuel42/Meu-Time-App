@@ -9,7 +9,7 @@ import LeagueSelect from "../src/components/selection/league/LeagueSelect";
 import TeamSelect from "../src/components/selection/team/TeamSelect";
 import TeamDetails from "../src/components/team-details/TeamDetails";
 
-import "./App.css";
+import "./App.scss";
 
 function App() {
   return (

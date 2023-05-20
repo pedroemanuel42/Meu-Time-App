@@ -1,4 +1,5 @@
 import React from "react";
+import "./countrySelect.scss";
 
 function CountrySelect() {
   return (

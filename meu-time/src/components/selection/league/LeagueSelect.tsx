@@ -1,4 +1,5 @@
 import React from "react";
+import "./leagueSelect.scss";
 
 function LeagueSelect() {
   return (

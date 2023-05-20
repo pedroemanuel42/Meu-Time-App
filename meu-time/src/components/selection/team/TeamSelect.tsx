@@ -1,4 +1,5 @@
 import React from "react";
+import "./teamSelect.scss";
 
 function TeamSelect() {
   return (

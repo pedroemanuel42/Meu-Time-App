@@ -1,4 +1,5 @@
 import React from "react";
+import "./teamDetails.scss";
 
 function TeamDetails() {
   return (
