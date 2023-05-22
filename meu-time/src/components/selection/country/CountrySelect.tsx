@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { FormControl, ListGroup } from "react-bootstrap";
 
 interface CountrySelectProps {
   apiKey?: string | null;
@@ -9,12 +10,15 @@ interface CountrySelectProps {
 interface Country {
   code: string;
   name: string;
+  flag: string;
 }
 
 function CountrySelect({ apiKey = null, onSelect }: CountrySelectProps) {
   const [countries, setCountries] = useState<Country[]>([]);
+  const [filteredCountries, setFilteredCountries] = useState<Country[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   useEffect(() => {
     const fetchCountries = async () => {
@@ -38,6 +42,7 @@ function CountrySelect({ apiKey = null, onSelect }: CountrySelectProps) {
         const resCountries = response.data.response;
 
         setCountries(resCountries);
+        setFilteredCountries(resCountries);
       } catch (error) {
         console.error(error);
         setError("Error fetching countries. Please try again later.");
@@ -48,6 +53,16 @@ function CountrySelect({ apiKey = null, onSelect }: CountrySelectProps) {
 
     fetchCountries();
   }, [apiKey]);
+
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const searchTerm = event.target.value.toLowerCase();
+    setSearchTerm(searchTerm);
+
+    const filteredCountries = countries.filter((country) =>
+      country.name.toLowerCase().includes(searchTerm)
+    );
+    setFilteredCountries(filteredCountries);
+  };
 
   if (loading) {
     return <div>Loading countries...</div>;
@@ -60,19 +75,26 @@ function CountrySelect({ apiKey = null, onSelect }: CountrySelectProps) {
   return (
     <div>
       <h2>Country Select</h2>
-      <label htmlFor="country-select">Select a country:</label>
-      <select
-        id="country-select"
-        onChange={(e) => onSelect(e.target.value)}
-        disabled={countries.length === 0}
-      >
-        <option value="">Select a country</option>
-        {countries.map((country) => (
-          <option key={country.name} value={country.name}>
-            {country.name}
-          </option>
+      <FormControl
+        type="text"
+        placeholder="Search by country name"
+        value={searchTerm}
+        onChange={handleSearch}
+      />
+      <ListGroup>
+        {filteredCountries.map((country, index) => (
+          <ListGroup.Item
+            key={country.name}
+            onClick={() => onSelect(country.name)}
+            action
+          >
+            <span>{index + 1}</span>
+            <img src={country.flag} alt={country.name} width={30} height={20} />
+            <span>{country.name}</span>
+            <span>{country.code}</span>
+          </ListGroup.Item>
         ))}
-      </select>
+      </ListGroup>
     </div>
   );
 }
