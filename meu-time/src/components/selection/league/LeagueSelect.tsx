@@ -43,7 +43,9 @@ const LeagueSelect = ({
 
         const resLeagues = response.data.response;
 
-        setLeagues(resLeagues);
+        const extractedLeagues: League[] = resLeagues.map((item: { league: League }) => item.league);
+
+        setLeagues(extractedLeagues);
       } catch (error) {
         console.error(error);
       }
