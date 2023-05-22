@@ -21,19 +21,25 @@ const Home = () => {
   };
 
   return (
-    <div>
-      <h1>Home</h1>
-      <CountrySelect apiKey={apiKey} onSelect={handleCountrySelect} />
-      {selectedCountry && (
-        <p>
-          Selected Country: {`${selectedCountry}`}
-          <LeagueSelect
-            apiKey={apiKey}
-            countrySelected={selectedCountry}
-            onSelect={handleLeagueSelect}
-          />
-        </p>
-      )}
+    <div className="home-container">
+      <h1 className="home-title">Home</h1>
+
+      <div className="home-country-select">
+        <CountrySelect apiKey={apiKey} onSelect={handleCountrySelect} />
+      </div>
+
+      <div className="home-league-select">
+        {selectedCountry && (
+          <p className="home-selected-info">
+            Selected Country: {`${selectedCountry}`}
+            <LeagueSelect
+              apiKey={apiKey}
+              countrySelected={selectedCountry}
+              onSelect={handleLeagueSelect}
+            />
+          </p>
+        )}
+      </div>
     </div>
   );
 };

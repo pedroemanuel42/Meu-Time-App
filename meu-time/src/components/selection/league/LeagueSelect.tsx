@@ -39,7 +39,6 @@ const LeagueSelect = ({
 
       try {
         const response = await axios.request(options);
-        console.log(response);
 
         const resLeagues = response.data.response;
 
