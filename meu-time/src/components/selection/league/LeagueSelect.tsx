@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import "./leagueSelect.scss";
-
 import axios from "axios";
+import "./leagueSelect.scss";
 
 interface LeagueSelectProps {
   apiKey?: string | null;
@@ -15,15 +14,20 @@ interface League {
 }
 
 const LeagueSelect = ({
-  apiKey,
-  countrySelected,
+  apiKey = null,
+  countrySelected = null,
   onSelect,
 }: LeagueSelectProps) => {
   const [leagues, setLeagues] = useState<League[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
     const fetchLeagues = async () => {
       if (!apiKey || !countrySelected) return;
+
+      setLoading(true);
+      setError("");
 
       const options = {
         method: "GET",
@@ -32,8 +36,8 @@ const LeagueSelect = ({
           country: countrySelected,
         },
         headers: {
-          "X-RapidAPI-Key": apiKey,
-          "X-RapidAPI-Host": "api-football-v1.p.rapidapi.com",
+          "x-rapidapi-key": apiKey,
+          "x-rapidapi-host": "api-football-v1.p.rapidapi.com",
         },
       };
 
@@ -42,16 +46,29 @@ const LeagueSelect = ({
 
         const resLeagues = response.data.response;
 
-        const extractedLeagues: League[] = resLeagues.map((item: { league: League }) => item.league);
+        const extractedLeagues: League[] = resLeagues.map(
+          (item: { league: League }) => item.league
+        );
 
         setLeagues(extractedLeagues);
       } catch (error) {
         console.error(error);
+        setError("Error fetching leagues. Please try again later.");
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchLeagues();
   }, [apiKey, countrySelected]);
+
+  if (loading) {
+    return <div>Loading leagues...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <div>
@@ -60,6 +77,7 @@ const LeagueSelect = ({
       <select
         id="league-select"
         onChange={(e) => onSelect(Number(e.target.value))}
+        disabled={leagues.length === 0}
       >
         <option value="">Select a league</option>
         {leagues.map((league) => (

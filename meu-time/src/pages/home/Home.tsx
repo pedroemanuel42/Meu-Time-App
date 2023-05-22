@@ -20,6 +20,10 @@ const Home = () => {
     setSelectedLeague(leagueId);
   };
 
+  if (!apiKey) {
+    return <div>Please provide an API key.</div>;
+  }
+
   return (
     <div className="home-container">
       <h1 className="home-title">Home</h1>
@@ -28,18 +32,20 @@ const Home = () => {
         <CountrySelect apiKey={apiKey} onSelect={handleCountrySelect} />
       </div>
 
-      <div className="home-league-select">
-        {selectedCountry && (
+      {selectedCountry ? (
+        <div className="home-league-select">
           <p className="home-selected-info">
-            Selected Country: {`${selectedCountry}`}
-            <LeagueSelect
-              apiKey={apiKey}
-              countrySelected={selectedCountry}
-              onSelect={handleLeagueSelect}
-            />
+            Selected Country: {selectedCountry}
           </p>
-        )}
-      </div>
+          <LeagueSelect
+            apiKey={apiKey}
+            countrySelected={selectedCountry}
+            onSelect={handleLeagueSelect}
+          />
+        </div>
+      ) : (
+        <p>Please select a country.</p>
+      )}
     </div>
   );
 };

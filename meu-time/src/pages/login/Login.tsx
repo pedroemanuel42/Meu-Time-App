@@ -1,18 +1,18 @@
 import React, { useState, ChangeEvent, FormEvent, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { ApiKeyContext } from "../../context/ApiKeyContext";
-
 import axios from "axios";
-
 import "./login.scss";
 
 const Login = () => {
   const [apiKey, setApiKey] = useState("");
   const navigate = useNavigate();
   const apiKeyContext = useContext(ApiKeyContext);
+  const [error, setError] = useState("");
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setApiKey(e.target.value);
+    setError("");
   };
 
   const validateApiKey = async (apiKey: string): Promise<boolean> => {
@@ -20,21 +20,23 @@ const Login = () => {
       method: "GET",
       url: "https://api-football-v1.p.rapidapi.com/v3/timezone",
       headers: {
-        "X-RapidAPI-Key": apiKey,
-        "X-RapidAPI-Host": "api-football-v1.p.rapidapi.com",
+        "x-rapidapi-key": apiKey,
+        "x-rapidapi-host": "api-football-v1.p.rapidapi.com",
       },
     };
 
     try {
       const response = await axios.request(options);
 
-      const data = response.data;
+      const status = response.status;
+      const isDataSuccess = response.data.success;
 
-      return data?.results > 0;
+      return isDataSuccess && status === 200;
     } catch (error) {
-      throw new Error(
+      setError(
         "Erro ao validar a chave da API. Por favor, tente novamente mais tarde."
       );
+      return false;
     }
   };
 
@@ -45,16 +47,20 @@ const Login = () => {
       const isValidKey = await validateApiKey(apiKey);
 
       if (!isValidKey) {
-        alert("A chave da API é inválida. Por favor, insira uma chave válida");
-
+        setError(
+          "A chave da API é inválida. Por favor, insira uma chave válida"
+        );
         return;
       }
 
-      apiKeyContext.setApiKey(apiKey);
+      setError(""); 
 
+      apiKeyContext.setApiKey(apiKey);
       navigate("/home");
     } catch (error) {
-      console.log(error);
+      setError(
+        "Erro ao validar a chave da API. Por favor, tente novamente mais tarde."
+      );
     }
   };
 
@@ -78,6 +84,8 @@ const Login = () => {
           <button className="login-submit" type="submit">
             Login
           </button>
+
+          {error && <p className="error-message">{error}</p>}
         </form>
       </div>
     </div>
