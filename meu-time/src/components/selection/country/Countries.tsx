@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import { FormControl, ListGroup } from "react-bootstrap";
+import { SpinnerCircular } from "spinners-react";
 
 interface CountrySelectProps {
   apiKey?: string | null;
@@ -13,7 +15,7 @@ interface Country {
   flag: string;
 }
 
-function CountrySelect({ apiKey = null, onSelect }: CountrySelectProps) {
+const Countries = ({ apiKey = null, onSelect }: CountrySelectProps) => {
   const [countries, setCountries] = useState<Country[]>([]);
   const [filteredCountries, setFilteredCountries] = useState<Country[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -65,7 +67,11 @@ function CountrySelect({ apiKey = null, onSelect }: CountrySelectProps) {
   };
 
   if (loading) {
-    return <div>Loading countries...</div>;
+    return (
+      <div>
+        <SpinnerCircular />
+      </div>
+    );
   }
 
   if (error) {
@@ -74,7 +80,7 @@ function CountrySelect({ apiKey = null, onSelect }: CountrySelectProps) {
 
   return (
     <div>
-      <h2>Country Select</h2>
+      <h2>Countries</h2>
       <FormControl
         type="text"
         placeholder="Search by country name"
@@ -92,6 +98,9 @@ function CountrySelect({ apiKey = null, onSelect }: CountrySelectProps) {
             <img src={country.flag} alt={country.name} width={30} height={20} />
             <span>{country.name}</span>
             <span>{country.code}</span>
+            <Link to={`/leagues/${country.name}`}>
+              <button>Leagues</button>
+            </Link>
           </ListGroup.Item>
         ))}
       </ListGroup>
@@ -99,4 +108,4 @@ function CountrySelect({ apiKey = null, onSelect }: CountrySelectProps) {
   );
 }
 
-export default CountrySelect;
+export default Countries;

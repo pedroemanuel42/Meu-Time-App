@@ -1,8 +1,10 @@
+// Leagues.tsx
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "./leagueSelect.scss";
+import { ListGroup } from "react-bootstrap";
+import { SpinnerCircular } from "spinners-react";
 
-interface LeagueSelectProps {
+interface LeaguesProps {
   apiKey?: string | null;
   countrySelected: string | null;
   onSelect: (leagueId: number) => void;
@@ -13,11 +15,11 @@ interface League {
   name: string;
 }
 
-const LeagueSelect = ({
+const Leagues = ({
   apiKey = null,
   countrySelected = null,
   onSelect,
-}: LeagueSelectProps) => {
+}: LeaguesProps) => {
   const [leagues, setLeagues] = useState<League[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
@@ -63,7 +65,11 @@ const LeagueSelect = ({
   }, [apiKey, countrySelected]);
 
   if (loading) {
-    return <div>Loading leagues...</div>;
+    return (
+      <div>
+        <SpinnerCircular />
+      </div>
+    );
   }
 
   if (error) {
@@ -72,22 +78,20 @@ const LeagueSelect = ({
 
   return (
     <div>
-      <h2>League Select</h2>
-      <label htmlFor="league-select">Select a league:</label>
-      <select
-        id="league-select"
-        onChange={(e) => onSelect(Number(e.target.value))}
-        disabled={leagues.length === 0}
-      >
-        <option value="">Select a league</option>
+      <h2>Leagues</h2>
+      <ListGroup>
         {leagues.map((league) => (
-          <option key={league.id} value={league.id}>
+          <ListGroup.Item
+            key={league.id}
+            onClick={() => onSelect(league.id)}
+            action
+          >
             {league.name}
-          </option>
+          </ListGroup.Item>
         ))}
-      </select>
+      </ListGroup>
     </div>
   );
 };
 
-export default LeagueSelect;
+export default Leagues;

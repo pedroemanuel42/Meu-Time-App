@@ -1,8 +1,8 @@
 import React, { useState, useContext } from "react";
 import { ApiKeyContext } from "../../context/ApiKeyContext";
 
-import CountrySelect from "../../components/selection/country/CountrySelect";
-import LeagueSelect from "../../components/selection/league/LeagueSelect";
+import CountrySelect from "../../components/selection/country/Countries";
+import LeagueSelect from "../../components/selection/league/Leagues";
 
 const Home = () => {
   const apiKeyContext = useContext(ApiKeyContext);

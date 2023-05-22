@@ -56,7 +56,7 @@ const Login = () => {
       setError(""); 
 
       apiKeyContext.setApiKey(apiKey);
-      navigate("/home");
+      navigate("/countries");
     } catch (error) {
       setError(
         "Erro ao validar a chave da API. Por favor, tente novamente mais tarde."
